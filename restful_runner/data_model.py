@@ -1,7 +1,7 @@
 from sqlalchemy import Column, DateTime, Enum, Integer, JSON, String
 from sqlalchemy.orm import declarative_base
 
-from autolab import schema
+from restful_runner import schema
 
 Base = declarative_base()
 

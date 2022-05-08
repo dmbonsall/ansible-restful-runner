@@ -7,12 +7,12 @@ from typing import Any, Dict, Optional
 from pydantic import BaseSettings
 
 
-_DEFAULT_CONFIG_PATH = "autolab.json"
+_DEFAULT_CONFIG_PATH = "restful_runner.json"
 
 
 @lru_cache
 def get_config_file_Path() -> Path:
-    path_str = os.environ.get("AUTOLAB_CONFIG", _DEFAULT_CONFIG_PATH)
+    path_str = os.environ.get("RESTFUL_RUNNER_CONFIG", _DEFAULT_CONFIG_PATH)
     return Path(path_str)
 
 
@@ -26,7 +26,7 @@ def json_config_settings_source(settings: BaseSettings) -> Dict[str, Any]:
 
 
 class ApplicationSettings(BaseSettings):
-    db_url: str = "sqlite:////ansible/autolab.db"
+    db_url: str = "sqlite:////ansible/restful_runner.db"
     max_executor_threads: int = 1
     private_data_dir: str = "/ansible"
     project_dir: Optional[str] = None

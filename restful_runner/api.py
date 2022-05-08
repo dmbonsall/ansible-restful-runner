@@ -6,8 +6,8 @@ import uuid
 
 from fastapi import FastAPI, HTTPException
 
-from autolab import database, config, data_model, services, utils
-from autolab.schema import AnsibleJob, StartPlaybookRequest
+from restful_runner import database, config, data_model, services, utils
+from restful_runner.schema import AnsibleJob, StartPlaybookRequest
 
 
 # ===== Get the settings and initialize everything =====

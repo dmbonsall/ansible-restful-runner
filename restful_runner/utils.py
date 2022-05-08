@@ -2,8 +2,8 @@ import datetime
 
 import ansible_runner
 
-from autolab import database
-from autolab.schema import AnsibleRunnerStatus, StatusHandlerStatus
+from restful_runner import database
+from restful_runner.schema import AnsibleRunnerStatus, StatusHandlerStatus
 
 
 def status_handler(status: StatusHandlerStatus, runner_config: ansible_runner.RunnerConfig):

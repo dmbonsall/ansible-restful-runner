@@ -6,11 +6,11 @@ import ansible_runner
 import ansible_runner.interface
 
 
-from autolab import config
-from autolab.schema import StatusHandlerInterface
+from restful_runner import config
+from restful_runner.schema import StatusHandlerInterface
 
 
-logger = logging.getLogger("autolab")
+logger = logging.getLogger("restful_runner")
 
 
 class PlaybookExecutorService:

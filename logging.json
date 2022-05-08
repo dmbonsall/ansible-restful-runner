@@ -28,6 +28,6 @@
         "uvicorn": {"handlers": ["default"], "level": "INFO"},
         "uvicorn.error": {"level": "INFO"},
         "uvicorn.access": {"handlers": ["access"], "level": "INFO", "propagate": false},
-        "autolab": {"handlers": ["default"], "level": "DEBUG"}
+        "restful_runner": {"handlers": ["default"], "level": "DEBUG"}
     }
 }
