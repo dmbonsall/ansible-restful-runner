@@ -21,15 +21,14 @@ executor_service = services.PlaybookExecutorService(executor, utils.status_handl
 
 
 app = FastAPI()
-app_api = FastAPI()
 
 
-@app_api.get("/")
+@app.get("/")
 def get_root():
     return "OK"
 
 
-@app_api.get("/playbooks", response_model=List[str])
+@app.get("/playbooks", response_model=List[str])
 def get_playbooks():
     if settings.project_dir is None:
         project_dir = os.path.join(settings.private_data_dir, "project")
@@ -41,7 +40,7 @@ def get_playbooks():
     return playbooks
 
 
-@app_api.post("/playbooks/{playbook}", response_model=AnsibleJob)
+@app.post("/playbooks/{playbook}", response_model=AnsibleJob)
 def start_playbook(playbook: str, request_data: StartPlaybookRequest):
     ident = str(uuid.uuid1())
     database.create_ansible_job(ident, playbook, "REST")
@@ -49,17 +48,14 @@ def start_playbook(playbook: str, request_data: StartPlaybookRequest):
     return database.get_ansible_job(ident)
 
 
-@app_api.get("/jobs", response_model=List[AnsibleJob])
+@app.get("/jobs", response_model=List[AnsibleJob])
 def get_jobs():
     return database.get_ansible_jobs()
 
 
-@app_api.get("/jobs/{job_uuid}", response_model=AnsibleJob)
+@app.get("/jobs/{job_uuid}", response_model=AnsibleJob)
 def get_job_by_uuid(job_uuid: str):
     job = database.get_ansible_job(job_uuid)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
     return job
-
-
-app.mount("/api", app_api)
