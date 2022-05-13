@@ -54,5 +54,6 @@ class ApplicationSettings(BaseSettings):
 
 _settings = ApplicationSettings()
 
+
 def get_app_settings() -> ApplicationSettings:
     return _settings

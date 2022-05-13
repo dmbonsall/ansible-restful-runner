@@ -8,6 +8,7 @@ from pydantic import BaseModel  # pylint: disable=no-name-in-module
 
 class AnsibleRunnerStatus(enum.Enum):
     """Status of an ansible job."""
+
     CREATED = "created"
     STARTING = "starting"
     RUNNING = "running"
@@ -19,6 +20,7 @@ class AnsibleRunnerStatus(enum.Enum):
 
 class AnsibleJob(BaseModel):
     """Information about an ansible job."""
+
     job_uuid: str
     status: AnsibleRunnerStatus
     start_time: Optional[datetime.datetime]
@@ -31,14 +33,18 @@ class AnsibleJob(BaseModel):
 
 class StatusHandlerStatus(BaseModel):
     """The status structure that is passed back from the ansible_runner.Runner class to status handler."""
+
     status: AnsibleRunnerStatus
     runner_ident: str
 
 
 class StartPlaybookRequest(BaseModel):
     """Request model for starting a playbook."""
+
     extravars: Optional[Dict[str, Any]] = None
     tags: Optional[List[str]] = None
 
 
-StatusHandlerInterface = Callable[[StatusHandlerStatus, ansible_runner.interface.RunnerConfig], None]
+StatusHandlerInterface = Callable[
+    [StatusHandlerStatus, ansible_runner.interface.RunnerConfig], None
+]

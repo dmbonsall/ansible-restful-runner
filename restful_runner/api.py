@@ -36,7 +36,9 @@ def get_playbooks():
         project_dir = settings.project_dir
 
     filenames = os.listdir(project_dir)
-    playbooks = [name for name in filenames if os.path.splitext(name)[1] in (".yml", ".yaml")]
+    playbooks = [
+        name for name in filenames if os.path.splitext(name)[1] in (".yml", ".yaml")
+    ]
     return playbooks
 
 
@@ -44,7 +46,9 @@ def get_playbooks():
 def start_playbook(playbook: str, request_data: StartPlaybookRequest):
     ident = str(uuid.uuid1())
     database.create_ansible_job(ident, playbook, "REST")
-    executor_service.submit_job(ident, playbook, request_data.extravars, request_data.tags)
+    executor_service.submit_job(
+        ident, playbook, request_data.extravars, request_data.tags
+    )
     return database.get_ansible_job(ident)
 
 

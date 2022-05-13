@@ -32,9 +32,12 @@ def initialize(db_url):
             db_url, connect_args={"check_same_thread": False}
         )
 
-        _db_state.session_local = sessionmaker(autocommit=False, autoflush=False, bind=_db_state.engine)
+        _db_state.session_local = sessionmaker(
+            autocommit=False, autoflush=False, bind=_db_state.engine
+        )
     else:
         raise RuntimeWarning("Database already initialized.")
+
 
 def get_engine():
     if _db_state.engine is None:
@@ -45,8 +48,12 @@ def get_engine():
 
 def create_ansible_job(job_uuid: str, job_name: str, initiator: str):
     with _db_state.session_local() as session:
-        ansible_job = AnsibleJob(job_uuid=job_uuid, job_name=job_name, initiator=initiator,
-                                 status=AnsibleRunnerStatus.CREATED)
+        ansible_job = AnsibleJob(
+            job_uuid=job_uuid,
+            job_name=job_name,
+            initiator=initiator,
+            status=AnsibleRunnerStatus.CREATED,
+        )
         session.add(ansible_job)
         session.commit()
         session.refresh(ansible_job)
@@ -60,7 +67,13 @@ def get_ansible_job(job_uuid: str):
 
 def get_ansible_jobs(skip: int = 0, limit: int = 100):
     with _db_state.session_local() as session:
-        return session.query(AnsibleJob).order_by(AnsibleJob.start_time.desc()).offset(skip).limit(limit).all()
+        return (
+            session.query(AnsibleJob)
+            .order_by(AnsibleJob.start_time.desc())
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
 
 
 def update_ansible_job(job_uuid: str, **kwargs):
@@ -79,29 +92,35 @@ def update_ansible_job(job_uuid: str, **kwargs):
 
     if update_dict:
         with _db_state.session_local() as session:
-            updated_rows = session.query(AnsibleJob) \
-                            .filter(AnsibleJob.job_uuid == job_uuid) \
-                            .update(update_dict)
+            updated_rows = (
+                session.query(AnsibleJob)
+                .filter(AnsibleJob.job_uuid == job_uuid)
+                .update(update_dict)
+            )
 
             if updated_rows == 0:
                 raise IndexError(f"No job with UUID: {job_uuid}")
             if updated_rows > 1:
                 session.rollback()
-                raise RuntimeError(f"More than one row ({updated_rows} rows) have UUID: {job_uuid}")
+                raise RuntimeError(
+                    f"More than one row ({updated_rows} rows) have UUID: {job_uuid}"
+                )
 
             session.commit()
 
 
-def delete_ansible_job(job_uuid:str):
+def delete_ansible_job(job_uuid: str):
     with _db_state.session_local() as session:
-        updated_rows = session.query(AnsibleJob) \
-                              .filter(AnsibleJob.job_uuid == job_uuid) \
-                              .delete()
+        updated_rows = (
+            session.query(AnsibleJob).filter(AnsibleJob.job_uuid == job_uuid).delete()
+        )
 
         if updated_rows == 0:
             raise IndexError(f"No job with UUID: {job_uuid}")
         if updated_rows > 1:
             session.rollback()
-            raise RuntimeError(f"More than one row ({updated_rows} rows) have UUID: {job_uuid}")
+            raise RuntimeError(
+                f"More than one row ({updated_rows} rows) have UUID: {job_uuid}"
+            )
 
         session.commit()

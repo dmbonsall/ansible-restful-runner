@@ -3,6 +3,7 @@ uvicorn[standard]
 sqlalchemy
 pydantic
 ansible-runner
+black
 
 # Ansible requirements (also for modules)
 ansible
