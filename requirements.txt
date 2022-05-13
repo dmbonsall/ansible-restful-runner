@@ -4,6 +4,7 @@ sqlalchemy
 pydantic
 ansible-runner
 black
+pre-commit
 
 # Ansible requirements (also for modules)
 ansible
