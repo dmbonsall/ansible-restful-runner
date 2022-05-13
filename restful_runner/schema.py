@@ -32,7 +32,7 @@ class AnsibleJob(BaseModel):
 
 
 class StatusHandlerStatus(BaseModel):
-    """The status structure that is passed back from the ansible_runner.Runner class to status handler."""
+    """Structure passed back from the ansible_runner.Runner class to status handler."""
 
     status: AnsibleRunnerStatus
     runner_ident: str

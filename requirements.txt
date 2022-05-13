@@ -5,6 +5,7 @@ pydantic
 ansible-runner
 black
 pre-commit
+flake8
 
 # Ansible requirements (also for modules)
 ansible
