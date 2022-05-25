@@ -16,7 +16,7 @@ def status_handler(
     session: Session,
     status_dict: Dict[str, str],
     runner_config: ansible_runner.RunnerConfig,
-):
+) -> None:
     """Callback to handle changes to status."""
     status = StatusHandlerStatus(**status_dict)
     cur_time = datetime.datetime.now()

@@ -1,7 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor
 import os
 import os.path
-from typing import List
+from typing import Generator, List
 import uuid
 
 from fastapi import FastAPI, HTTPException, Depends
@@ -18,7 +18,7 @@ db = database.DatabaseConnection(settings.db_url)
 data_model.Base.metadata.create_all(bind=db.get_engine())
 
 
-def get_session():
+def get_session() -> Generator[Session, None, None]:
     session = db.session_local()
     try:
         yield session

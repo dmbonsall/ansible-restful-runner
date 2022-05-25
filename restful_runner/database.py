@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker, Session
@@ -21,7 +23,9 @@ class DatabaseConnection:
         return self._session_local()
 
 
-def create_ansible_job(session: Session, job_uuid: str, job_name: str, initiator: str):
+def create_ansible_job(
+    session: Session, job_uuid: str, job_name: str, initiator: str
+) -> AnsibleJob:
     ansible_job = AnsibleJob(
         job_uuid=job_uuid,
         job_name=job_name,
@@ -34,11 +38,13 @@ def create_ansible_job(session: Session, job_uuid: str, job_name: str, initiator
     return ansible_job
 
 
-def get_ansible_job(session: Session, job_uuid: str):
+def get_ansible_job(session: Session, job_uuid: str) -> AnsibleJob:
     return session.query(AnsibleJob).filter(AnsibleJob.job_uuid == job_uuid).one()
 
 
-def get_ansible_jobs(session: Session, skip: int = 0, limit: int = 100):
+def get_ansible_jobs(
+    session: Session, skip: int = 0, limit: int = 100
+) -> List[AnsibleJob]:
     return (
         session.query(AnsibleJob)
         .order_by(AnsibleJob.start_time.desc())
@@ -48,7 +54,7 @@ def get_ansible_jobs(session: Session, skip: int = 0, limit: int = 100):
     )
 
 
-def update_ansible_job(session: Session, job_uuid: str, **kwargs):
+def update_ansible_job(session: Session, job_uuid: str, **kwargs) -> None:
     update_dict = {}
     if "status" in kwargs:
         update_dict[AnsibleJob.status] = kwargs["status"]
@@ -80,7 +86,7 @@ def update_ansible_job(session: Session, job_uuid: str, **kwargs):
         session.commit()
 
 
-def delete_ansible_job(session: Session, job_uuid: str):
+def delete_ansible_job(session: Session, job_uuid: str) -> None:
     updated_rows = (
         session.query(AnsibleJob).filter(AnsibleJob.job_uuid == job_uuid).delete()
     )

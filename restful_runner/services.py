@@ -19,7 +19,7 @@ class PlaybookExecutorService:
         executor: Executor,
         status_handler: StatusHandlerInterface,
         settings: Optional[ApplicationSettings] = None,
-    ):
+    ) -> None:
         self._executor: Executor = executor
         self._status_handler = status_handler
         self._settings = settings if settings is not None else get_app_settings()
@@ -31,7 +31,7 @@ class PlaybookExecutorService:
         playbook: str,
         extravars: Optional[Dict[str, Any]] = None,
         tags: Optional[List[str]] = None,
-    ):
+    ) -> None:
         if extravars is None:
             extravars = {}
 
@@ -54,7 +54,7 @@ class PlaybookExecutorService:
         self._future_map[ident] = future
         logger.info("Submitted job: %s", ident)
 
-    def done_callback(self, future: Future):
+    def done_callback(self, future: Future) -> None:
         runner: ansible_runner.Runner = future.result()
         self._future_map.pop(runner.config.ident)
         logger.info("Finished job: %s", runner.config.ident)
