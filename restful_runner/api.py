@@ -4,7 +4,8 @@ import os.path
 from typing import List
 import uuid
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
+from sqlalchemy.orm import Session
 
 from restful_runner import database, config, data_model, services, utils
 from restful_runner.schema import AnsibleJob, StartPlaybookRequest
@@ -13,8 +14,17 @@ from restful_runner.schema import AnsibleJob, StartPlaybookRequest
 # ===== Get the settings and initialize everything =====
 settings = config.get_app_settings()
 
-database.initialize(db_url=settings.db_url)
-data_model.Base.metadata.create_all(bind=database.get_engine())
+db = database.DatabaseConnection(settings.db_url)
+data_model.Base.metadata.create_all(bind=db.get_engine())
+
+
+def get_session():
+    session = db.session_local()
+    try:
+        yield session
+    finally:
+        session.close()
+
 
 executor = ThreadPoolExecutor(max_workers=settings.max_executor_threads)
 executor_service = services.PlaybookExecutorService(executor, utils.status_handler)
@@ -43,23 +53,32 @@ def get_playbooks():
 
 
 @app.post("/playbooks/{playbook}", response_model=AnsibleJob)
-def start_playbook(playbook: str, request_data: StartPlaybookRequest):
+def start_playbook(
+    playbook: str,
+    request_data: StartPlaybookRequest,
+    session: Session = Depends(get_session),
+):
     ident = str(uuid.uuid1())
-    database.create_ansible_job(ident, playbook, "REST")
+    database.create_ansible_job(session, ident, playbook, "REST")
     executor_service.submit_job(
         ident, playbook, request_data.extravars, request_data.tags
     )
-    return database.get_ansible_job(ident)
+    return database.get_ansible_job(session, ident)
 
 
 @app.get("/jobs", response_model=List[AnsibleJob])
-def get_jobs():
-    return database.get_ansible_jobs()
+def get_jobs(
+    session: Session = Depends(get_session),
+):
+    return database.get_ansible_jobs(session)
 
 
 @app.get("/jobs/{job_uuid}", response_model=AnsibleJob)
-def get_job_by_uuid(job_uuid: str):
-    job = database.get_ansible_job(job_uuid)
+def get_job_by_uuid(
+    job_uuid: str,
+    session: Session = Depends(get_session),
+):
+    job = database.get_ansible_job(session, job_uuid)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
     return job
