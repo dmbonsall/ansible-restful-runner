@@ -11,14 +11,14 @@ _DEFAULT_CONFIG_PATH = "restful_runner.json"
 
 
 @lru_cache
-def get_config_file_Path() -> Path:
+def get_config_file_path() -> Path:
     path_str = os.environ.get("RESTFUL_RUNNER_CONFIG", _DEFAULT_CONFIG_PATH)
     return Path(path_str)
 
 
 def json_config_settings_source(settings: BaseSettings) -> Dict[str, Any]:
     encoding = settings.__config__.env_file_encoding
-    config_path = get_config_file_Path()
+    config_path = get_config_file_path()
     if config_path.is_file():
         return json.loads(config_path.read_text(encoding))
 
