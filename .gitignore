@@ -7,3 +7,4 @@ ansible
 *.egg-info
 .coverage
 .pytest_cache
+htmlcov

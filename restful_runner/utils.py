@@ -36,6 +36,6 @@ def status_handler(
 def build_status_handler(sessionmaker: Callable[[], Session]) -> StatusHandlerInterface:
     def wrapper(status: Dict[str, str], runner_config: ansible_runner.RunnerConfig):
         with sessionmaker() as session:
-            return status_handler(session, status, runner_config)
+            status_handler(session, status, runner_config)
 
     return wrapper
