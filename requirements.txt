@@ -12,3 +12,6 @@ ansible
 proxmoxer
 jmespath
 requests
+
+pytest
+pytest-cov

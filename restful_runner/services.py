@@ -5,18 +5,24 @@ from typing import Any, Dict, List, Optional
 import ansible_runner
 import ansible_runner.interface
 
-
-from restful_runner import config
 from restful_runner.schema import StatusHandlerInterface
+from restful_runner.config import ApplicationSettings
+from restful_runner.config import get_app_settings
 
 
 logger = logging.getLogger("restful_runner")
 
 
 class PlaybookExecutorService:
-    def __init__(self, executor: Executor, status_handler: StatusHandlerInterface):
+    def __init__(
+        self,
+        executor: Executor,
+        status_handler: StatusHandlerInterface,
+        settings: Optional[ApplicationSettings] = None,
+    ):
         self._executor: Executor = executor
         self._status_handler = status_handler
+        self._settings = settings if settings is not None else get_app_settings()
         self._future_map = {}
 
     def submit_job(
@@ -31,14 +37,13 @@ class PlaybookExecutorService:
 
         cmdline = f"--tags {','.join(tags)}" if tags else ""
 
-        settings = config.get_app_settings()
         future = self._executor.submit(
             ansible_runner.run,
             status_handler=self._status_handler,
-            quiet=settings.ansible_quiet,
-            project_dir=settings.project_dir,
-            artifact_dir=settings.artifact_dir,
-            private_data_dir=settings.private_data_dir,
+            quiet=self._settings.ansible_quiet,
+            project_dir=self._settings.project_dir,
+            artifact_dir=self._settings.artifact_dir,
+            private_data_dir=self._settings.private_data_dir,
             ident=ident,
             playbook=playbook,
             extravars=extravars,
