@@ -27,7 +27,9 @@ def get_session():
 
 
 executor = ThreadPoolExecutor(max_workers=settings.max_executor_threads)
-executor_service = services.PlaybookExecutorService(executor, utils.status_handler)
+executor_service = services.PlaybookExecutorService(
+    executor, utils.build_status_handler(db.session_local)
+)
 
 
 app = FastAPI()
