@@ -1,0 +1,11 @@
+# Include the core requirements
+-r requirements.txt
+
+# Dev specific requirements
+setuptools
+pytest
+pytest-cov
+pylint
+black
+flake8
+pre-commit

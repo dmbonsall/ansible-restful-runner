@@ -3,16 +3,3 @@ uvicorn[standard]
 sqlalchemy
 pydantic
 ansible-runner
-black
-pre-commit
-flake8
-
-# Ansible requirements (also for modules)
-ansible
-proxmoxer
-jmespath
-requests
-
-pytest
-pytest-cov
-pylint
