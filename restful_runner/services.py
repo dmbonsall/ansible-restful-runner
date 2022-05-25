@@ -23,7 +23,7 @@ class PlaybookExecutorService:
         self._executor: Executor = executor
         self._status_handler = status_handler
         self._settings = settings if settings is not None else get_app_settings()
-        self._future_map = {}
+        self._future_map: Dict[str, Future] = {}
 
     def submit_job(
         self,

@@ -1,5 +1,5 @@
 import datetime
-from typing import Callable
+from typing import Callable, Dict
 
 import ansible_runner
 from sqlalchemy.orm import Session
@@ -14,11 +14,11 @@ from restful_runner.schema import (
 
 def status_handler(
     session: Session,
-    status: StatusHandlerStatus,
+    status_dict: Dict[str, str],
     runner_config: ansible_runner.RunnerConfig,
 ):
     """Callback to handle changes to status."""
-    status = StatusHandlerStatus(**status)
+    status = StatusHandlerStatus(**status_dict)
     cur_time = datetime.datetime.now()
     if status.status == AnsibleRunnerStatus.STARTING:
         database.update_ansible_job(
@@ -34,9 +34,7 @@ def status_handler(
 
 
 def build_status_handler(sessionmaker: Callable[[], Session]) -> StatusHandlerInterface:
-    def wrapper(
-        status: StatusHandlerStatus, runner_config: ansible_runner.RunnerConfig
-    ):
+    def wrapper(status: Dict[str, str], runner_config: ansible_runner.RunnerConfig):
         with sessionmaker() as session:
             return status_handler(session, status, runner_config)
 

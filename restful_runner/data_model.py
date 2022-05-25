@@ -6,7 +6,7 @@ from restful_runner import schema
 Base = declarative_base()
 
 
-class AnsibleJob(Base):
+class AnsibleJob(Base):  # type: ignore[valid-type,misc]
     __tablename__ = "ansible_jobs"
 
     id = Column(Integer, primary_key=True, index=True)

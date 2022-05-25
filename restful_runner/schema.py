@@ -46,5 +46,5 @@ class StartPlaybookRequest(BaseModel):
 
 
 StatusHandlerInterface = Callable[
-    [StatusHandlerStatus, ansible_runner.interface.RunnerConfig], None
+    [Dict[str, str], ansible_runner.interface.RunnerConfig], None
 ]
